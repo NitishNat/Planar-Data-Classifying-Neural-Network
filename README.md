@@ -22,7 +22,7 @@ Using the existing regression model in the sklearn library, Logistic Regression 
 
 A neural network with one hidden network of size 4 is used for classification. 
 
-    ### Neural Network Structure:
+     Neural Network Structure:
         1) Define number of inputs, dimensions of the layers.
         2) Initialize parameters randomly
         3) Loop:
