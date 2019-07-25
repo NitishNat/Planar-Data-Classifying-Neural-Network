@@ -104,3 +104,81 @@ def forward_propagation(X, parameters):
     
 	return A2, cache
     
+def compute_cost(A2, Y, parameters):
+    """
+    Computes the cross-entropy cost given in equation (13)
+    
+    Arguments:
+    A2 -- The sigmoid output of the second activation, of shape (1, number of examples)
+    Y -- "true" labels vector of shape (1, number of examples)
+    parameters -- python dictionary containing your parameters W1, b1, W2 and b2
+    
+    Returns:
+    cost -- cross-entropy cost given equation (13)
+    """
+    
+    m = Y.shape[1]
+
+    # Compute the cross-entropy cost
+  
+    logprobs = np.multiply(np.log(A2),Y)
+    cost = - np.sum(logprobs)
+    cost = np.squeeze(cost) 
+    
+    return cost   
+
+
+def backward_propagation(parameters, cache, X, Y):
+    """
+    Arguments:
+    parameters -- python dictionary containing our parameters 
+    cache -- a dictionary containing "Z1", "A1", "Z2" and "A2".
+    X -- input data of shape (2, number of examples)
+    Y -- "true" labels vector of shape (1, number of examples)
+    
+    Returns:
+    grads -- python dictionary containing your gradients with respect to different parameters
+    """
+    m = X.shape[1]
+    W1 = parameters["W1"]
+    W2 = parameters["W2"]
+    A1 = cache["A1"]
+    A2 = cache["A2"]
+  
+    
+    # Backward propagation: calculate dW1, db1, dW2, db2. 
+    
+    dZ2 = A2 - Y
+    dW2 = (1/m)*np.matmul(dZ2, A1.transpose())
+    db2 = (1/m)*np.sum(dZ2, axis = 1, keepdims = True)
+    dZ1 = np.matmul(W2.transpose(), dZ2)*(1 - np.power(A1, 2))
+    dW1 = (1/m)*np.matmul(dZ1, X.transpose())
+    db1 = (1/m)*np.sum(dZ1, axis = 1, keepdims = True)
+    
+    grads = {"dW1": dW1,
+             "db1": db1,
+             "dW2": dW2,
+             "db2": db2}
+    
+    return grads
+
+def predict(parameters, X):
+    """
+    Using the learned parameters, predicts a class for each example in X
+    
+    Arguments:
+    parameters -- python dictionary containing your parameters 
+    X -- input data of size (n_x, m)
+    
+    Returns
+    predictions -- vector of predictions of our model (red: 0 / blue: 1)
+    """
+    
+    # Computes probabilities using forward propagation, and classifies to 0/1 using 0.5 as the threshold.
+    
+    A2, cache = forward_propagation(X, parameters)
+    predictions = A2 > 0.5
+    
+    return predictions
+
+
